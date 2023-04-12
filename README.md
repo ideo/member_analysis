@@ -32,18 +32,18 @@
 > 
 > To deploy on Streamlit Cloud, repo  MUST be public unless it is your ONE free private app. To replicate this app's setup, take below steps to protect your data & add some admittedly minimal authentication.
 
-1. Make repo public. **Warning** CAREFUL
+1. Make repo public. :warning: CAREFUL
 
    **TIPS**
    * Start with relatively simple app setup. 
    * Then use [secrets management](https://docs.streamlit.io/streamlit-community-cloud/get-started/deploy-an-app/connect-to-data-sources/secrets-management) and [caching](https://docs.streamlit.io/library/advanced-features/caching) to layer in options.
    * Test connections & configurations locally `.streamlit/secrets.toml` before deploying
-   * **Warning** Update `.gitignore` to protect secrets.
+   * :warning: Update `.gitignore` to protect secrets.
    * Add to production by going to the app dashboard and in the app's dropdown menu, click on **Edit Secrets**. Copy the content of `secrets.toml` into the text area.
-   * **Note** 
-     * Layer in new connections & configurations gradually.
-     * Add them locally & then again in deployment.
-     * If you want until everything works locally before deployment, it might still fail, and it will be MUCH harder to debug. 
+> **Note**
+>  * Layer in new connections & configurations gradually.
+>  * Add them locally & then again in deployment.
+>  * If you want until everything works locally before deployment, it might still fail, and it will be MUCH harder to debug. 
 
 2. Deploy on [Streamlit Cloud](https://docs.streamlit.io/streamlit-community-cloud/get-started/deploy-an-app)
 3. Add users & passwords [authentication without SS0](https://docs.streamlit.io/knowledge-base/deploy/authentication-without-sso).
