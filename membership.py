@@ -172,6 +172,16 @@ def extract_member_data(employee_df, member_emails):
 
     return member_data_df
 
+def plot_general_info(erg_df):
+    st.title('General Employee Data')
+    st.caption('Source: Workday March 2023 - Contains some errors')
+    st.subheader(f'Raw IDEO.com Employee Data: {erg_df.shape[0]}')
+    st.dataframe(erg_df)
+
+def plot_data(erg_df):
+    plot_general_info(erg_df)
+    # plot_level_info(erg_df)
+    # plot_location_info(erg_df)
 
 if check_password():
     st.title("Ask more informed questions!")
@@ -181,3 +191,5 @@ if check_password():
     erg_member_emails = load_member_emails()
     employee_data_df = load_employee_data()
     erg_member_data_df = extract_member_data(employee_data_df, erg_member_emails)
+
+    plot_data(erg_member_data_df)
