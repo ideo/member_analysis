@@ -10,6 +10,7 @@ googleapis-common-protos==1.59.0
 grpcio==1.53.0
 grpcio-status==1.53.0
 gsheetsdb==0.1.13.1
+gspread==5.8.0
 httplib2==0.22.0
 idna==3.4
 mo-dots==4.22.21108
