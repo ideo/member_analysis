@@ -82,8 +82,32 @@ def load_raw_employee_data():
     return df[sub_cols].copy()
 
 
+def add_true_regions(df):
+    for k, v in true_region_mapping.items():
+        df.loc[df['location'].str.contains('|'.join(v)), 'region_simplified'] = k
+
+    return df
+
+
+def clean_studio_names(df):
+    df['studio'] = df['location']
+    df.loc[df['location'].str.contains('Remote|Cloud'), 'studio'] = 'Cloud'
+    for studio in studio_names:
+        df.loc[df['location'].str.contains(studio), 'studio'] = studio
+
+    return df
+
+
+def clean_geographic_data(df):
+    df = clean_studio_names(df)
+    df = add_true_regions(df)
+
+    return df
+
 def load_employee_data(member_emails):
     employee_data_df = load_raw_employee_data()
+    employee_data_df = clean_geographic_data(employee_data_df)
+
 
 
 if check_password():

@@ -16,3 +16,9 @@ biz_details = [
     'Hire Date',
     'Region',
     'location']
+
+true_region_mapping = {
+    'NA': ['Remote', 'Lion', 'Cambridge', 'Chicago', 'San Francisco'],
+    'Asia': ['Tokyo', 'Shanghai', 'Singapore'],
+    'Europe': ['Munich', 'London'],
+}
