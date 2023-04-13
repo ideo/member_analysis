@@ -18,14 +18,16 @@
     source deactivate
     ```
 
-## Running locally
+## Streamlit Setup
+
+### Running locally
     
    To run locally (default Local URL: [http://localhost:8501](http://localhost:8501))
    ```
    streamlit run membership.py
    ```
 
-## Deploy on streamlit
+### Deploy on streamlit
 
    One option to deploy for free is [Streamlit.io](https://streamlit.io/)
 > **Warning**
@@ -50,7 +52,41 @@
 3. Add users & passwords [authentication without SS0](https://docs.streamlit.io/knowledge-base/deploy/authentication-without-sso).
 4. Connect to datasource(s) using secrets management and caching. Check out [tutorials](https://docs.streamlit.io/knowledge-base/tutorials/databases).
 
-## This app uses Private Goolge Sheet option
+### This app uses Private Google Sheet option
 > **Note**
-> 
 > `google.oauth2` not working in `virtualenv`. Continuing to dev outside virtualenv.     
+
+
+# Linking Data
+
+## Private Google Sheet FTW!
+   - Easy, accessible
+   - Great for keeping everything in house
+>  **Warning**
+>  Transfer to another party would take several not so straightforward steps.
+>  Alternative DB solutions are potentially better for clients & external partners
+   1. link via steps... (see above)
+   2. revoke assess to sheet from everyone. limit to authorized users
+   3. add service email to authorise email - VIEW ONLY!
+   4. separate sheets in same doc can be linked to as unique urls. makes things contained   
+>   **Note** 
+>   Everything in `secrets.toml` accessible by others in your org. Secrets are not exactly secret there.
+
+## User & passwords
+>   **Note** 
+>   Everything in `secrets.toml` accessible by others in your org. Secrets are not exactly secret there.
+1. Logic checks if there's username in sheet & if there is a username password match 
+
+## Workday employee data
+1. Import directly into private google sheet using custom AppScript. Thank you, @bradspar, for your example that uses Basic Auth and doesn't break!![repo](https://github.com/bradjasper/ImportJSON)
+2. More info on source can be found by reaching out to in to tech team for authorization. **HINT**: There's a **Workday - Airtable Reports** document with all the necessary details.
+> **Note** 
+> reading data from Google Sheets changes the default datatypes and some columns name formats might need extras handling.
+
+## Member data
+- Defined by Slack channel membership currently. Limited in that they are only snapshot lists.
+1. Go to settings of Slack channel
+2. Copy member emails
+3. Examples can be entered manually user into app
+> **Note** 
+> To add into backend of app takes some coding. 

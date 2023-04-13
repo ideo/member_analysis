@@ -25,8 +25,8 @@ def check_password():
 
         if (
                 st.session_state["username"] in df['username'].values
-                and ((df['username'] == st.session_state["username"]) & (
-                df['password'] == st.session_state["password"])).any()
+                and ((df['username'] == st.session_state["username"]) &
+                     (df['password'] == st.session_state["password"])).any()
         ):
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # don't store username + password
