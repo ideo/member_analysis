@@ -120,6 +120,22 @@ def add_level_groups(df):
 
     return df
 
+def add_cost_center_type(df):
+
+    df['cost_center_type'] = df[cost_center_col]
+
+    for job_family in internal_cost_centers:
+        df.loc[df[cost_center_col].str.contains(job_family), 'cost_center_type'] = 'Internal'
+
+    df.loc[df[cost_center_col].str.contains('General'), 'cost_center_type'] = 'External'
+    df.loc[df[cost_center_col].str.contains('IDEO U'), 'cost_center_type'] = 'External'
+    df.loc[df[cost_center_col].str.contains('Open Financial Systems'), 'cost_center_type'] = 'External'
+    df.loc[df[cost_center_col].str.contains('Shop'), 'cost_center_type'] = 'External'
+    df.loc[df[cost_center_col].str.contains('Production'), 'cost_center_type'] = 'External'
+    df.loc[df[cost_center_col].str.contains('Creative Leadership'), 'cost_center_type'] = 'External'
+
+    return df
+
 
 def add_ideo_tenure(df):
     df['Hire Date'] = pd.to_datetime(df['Hire Date'])
@@ -131,7 +147,7 @@ def load_employee_data():
     df = load_raw_employee_data()
     df = clean_geographic_data(df)
     df = add_level_groups(df)
-    # df = add_cost_center_type(df)
+    df = add_cost_center_type(df)
     return add_ideo_tenure(df)
 
 

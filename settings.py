@@ -1,4 +1,4 @@
-level_col = 'Management Level'
+
 power = ['Individual', 'Team', 'Director', 'Enterprise', ]
 management_levels = [
     'Individual',
@@ -10,10 +10,13 @@ management_levels = [
     'Enterprise',
     'Senior Enterprise',
 ]
+internal_cost_centers = ['Facilities', 'Experience', 'Talent', 'Enterprise', 'Legal', 'Technology',
+                         'Marketing', 'Finance', 'BD', 'Global']
 
 email_col = 'Email - Work'
+level_col = 'Management Level'
+cost_center_col = 'Cost Center'
 identifiers = ['Employee Id', 'Worker', email_col, 'Preferred Name', ]
-
 biz_details = [
     # 'businessTitle', 'Position', # businessTitle == Position?? - nope some diff
     'Active Status',
