@@ -3,6 +3,7 @@ from google.oauth2 import service_account
 import gspread
 
 import pandas as pd
+from settings import *
 
 # Create a connection object.
 credentials = service_account.Credentials.from_service_account_info(
@@ -68,10 +69,27 @@ def load_member_emails():
     return member_emails
 
 
+def load_raw_employee_data():
+    worksheet = spreadsheet.worksheet("🔐 Workday employee data 04.2023")
+    list_of_dicts = worksheet.get_all_records()
+    df = pd.DataFrame(list_of_dicts)
+
+    df = df[df['Active Status'] == 1].copy()
+
+    sub_cols = []
+    sub_cols.extend(identifiers)
+    sub_cols.extend(biz_details)
+    return df[sub_cols].copy()
+
+
+def load_employee_data(member_emails):
+    employee_data_df = load_raw_employee_data()
+
+
 if check_password():
     st.title("Ask more informed questions!")
     st.header("TKTK - Msg to users & disclaimer about what's in and not in data")
     # Retrieve sheet names
 
     erg_member_emails = load_member_emails()
-
+    erg_member_df = load_employee_data(erg_member_emails)
