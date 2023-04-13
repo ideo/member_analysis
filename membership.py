@@ -230,6 +230,7 @@ def plot_general_info(erg_df):
             chart = fill_chart(erg_df, x=x, y=y, ysort=ysort, tooltip=tooltip)
             st.altair_chart(chart)
 
+
 def remove_contingency_option(erg_df, section):
     types = erg_df['Worker Type'].unique()
     df = erg_df.copy()
@@ -243,6 +244,7 @@ def remove_contingency_option(erg_df, section):
         if exclude_contingency == "Yes":
             df = erg_df[erg_df['Worker Type'] != 'Contingent Worker'].copy()
     return df
+
 
 def plot_level_info(erg_df):
     st.title('Power distribution')
