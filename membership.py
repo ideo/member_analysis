@@ -22,7 +22,7 @@ def check_password():
     def password_entered():
         """Checks whether a password entered by the user is correct."""
         # select spreadsheet, then sheet
-        worksheet = spreadsheet.worksheet("Passwords")
+        worksheet = spreadsheet.worksheet("🔐 Passwords")
         list_of_dicts = worksheet.get_all_records()
         df = pd.DataFrame(list_of_dicts)
 
@@ -57,11 +57,21 @@ def check_password():
         return True
 
 
-if check_password():
-    st.write("Here goes your normal Streamlit app...")
+def load_member_emails():
+    raw_emails = st.text_area('Add emails from slack channel', '''''')
+    member_emails = raw_emails.split(", ")
+    member_cnt = 0
+    if raw_emails:
+        member_cnt = len(member_emails)
 
-# Retrieve sheet names
-spreadsheet = gc.open_by_url(gsheets_url)
-sheet_names = [s.title for s in spreadsheet.worksheets()]
-erg_sheet_names = [title for title in sheet_names if "🔐" not in title]
-st.write(erg_sheet_names)
+    st.caption(f'Number of member emails loaded: {member_cnt}')
+    return member_emails
+
+
+if check_password():
+    st.title("Ask more informed questions!")
+    st.header("TKTK - Msg to users & disclaimer about what's in and not in data")
+    # Retrieve sheet names
+
+    erg_member_emails = load_member_emails()
+
