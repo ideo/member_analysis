@@ -1,8 +1,9 @@
 import streamlit as st
 from google.oauth2 import service_account
 import gspread
-
 import pandas as pd
+import datetime
+
 from settings import *
 
 # Create a connection object.
@@ -104,11 +105,27 @@ def clean_geographic_data(df):
 
     return df
 
+
+def add_ideo_tenure(df):
+    df['Hire_Date'] = pd.to_datetime(df['Hire_Date'])
+    df['tenure_in_yrs'] = (datetime.datetime.now() - df['Hire_Date']) / np.timedelta64(1, 'Y')
+    return df
+
+
 def load_employee_data(member_emails):
     employee_data_df = load_raw_employee_data()
     employee_data_df = clean_geographic_data(employee_data_df)
+    # erg_member_data_df = add_level_groups(erg_member_data_df)
+    # erg_member_data_df = add_cost_center_type(erg_member_data_df)
+    return add_ideo_tenure(employee_data_df)
 
 
+def extract_member_data(employee_data_df, member_emails):
+    member_data_df = employee_data_df[employee_data_df[email_col].isin(member_emails)].copy()
+    member_data_df.reset_index(inplace=True, drop=True)
+    # check_for_non_ideo_com_members(member_emails, erg_member_data_df)
+
+    return member_data_df
 
 if check_password():
     st.title("Ask more informed questions!")
@@ -116,4 +133,6 @@ if check_password():
     # Retrieve sheet names
 
     erg_member_emails = load_member_emails()
-    erg_member_df = load_employee_data(erg_member_emails)
+    employee_data_df = load_employee_data(erg_member_emails)
+    erg_member_data_df = extract_member_data(employee_data_df, erg_member_emails)
+
