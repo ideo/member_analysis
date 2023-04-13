@@ -151,10 +151,24 @@ def load_employee_data():
     return add_ideo_tenure(df)
 
 
+def check_for_non_ideo_com_members(member_emails, employee_df):
+    ideo_email_list = employee_df[email_col].unique().tolist()
+    outside_ideo_com = list(set(member_emails) - set(ideo_email_list))
+    if outside_ideo_com:
+        if outside_ideo_com != [""]:
+            email_cnt = len(outside_ideo_com)
+        else:
+            email_cnt = 0
+        st.header(f'ERG members without ideo.com email address OR not in Workday data: {email_cnt}')
+        my_expander = st.expander(label='Expand me to see emails')
+        with my_expander:
+            st.write(outside_ideo_com)
+
+
 def extract_member_data(employee_df, member_emails):
     member_data_df = employee_df[employee_df[email_col].isin(member_emails)].copy()
     member_data_df.reset_index(inplace=True, drop=True)
-    # check_for_non_ideo_com_members(member_emails, erg_member_data_df)
+    check_for_non_ideo_com_members(member_emails, member_data_df)
 
     return member_data_df
 
