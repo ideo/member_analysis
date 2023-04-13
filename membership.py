@@ -1,6 +1,9 @@
 import streamlit as st
+import altair as alt
+
 from google.oauth2 import service_account
 import gspread
+
 import pandas as pd
 import datetime
 import numpy as np
@@ -120,8 +123,8 @@ def add_level_groups(df):
 
     return df
 
-def add_cost_center_type(df):
 
+def add_cost_center_type(df):
     df['cost_center_type'] = df[cost_center_col]
 
     for job_family in internal_cost_centers:
@@ -172,16 +175,67 @@ def extract_member_data(employee_df, member_emails):
 
     return member_data_df
 
+
+def fill_chart(df, x, y, xbin=False, ysort=None, tooltip=None):
+    if tooltip:
+        return (
+            alt.Chart(df)
+            .mark_bar()
+            .encode(
+                alt.X(x, bin=xbin),
+                alt.Y(y, sort=ysort),
+                alt.Color("level_group", sort=power, scale=alt.Scale(scheme='magma')),
+                tooltip=tooltip
+            )
+            .interactive()
+        )
+    else:
+        return (
+            alt.Chart(df)
+            .mark_bar()
+            .encode(
+                alt.X(x, bin=xbin),
+                alt.Y(y, sort=ysort),
+                alt.Color("level_group", sort=power, scale=alt.Scale(scheme='magma')),
+            )
+            .interactive()
+        )
+
+
 def plot_general_info(erg_df):
     st.title('General Employee Data')
     st.caption('Source: Workday March 2023 - Contains some errors')
     st.subheader(f'Raw IDEO.com Employee Data: {erg_df.shape[0]}')
     st.dataframe(erg_df)
 
+    col1, col2 = st.columns([3, 2])
+    streamlit_cols = [col1, col2, col2]
+
+    for i, col in enumerate(general_info):
+        with streamlit_cols[i]:
+            # COUNTS BY CATEGORY
+            group_sizes = erg_df.groupby(col).size().reset_index(name='count')
+            # if group_sizes.shape[0] > 1:
+            # TITLE & DATA
+            st.subheader(col)
+            my_expander = st.expander(label='Expand me')
+            with my_expander:
+                st.dataframe(group_sizes)
+            # PLOT
+            x = "count()"
+            y = f"{col}:O"
+            ysort = '-x'
+            tooltip = ["Worker", "cost_center_type", cost_center_col, level_col,
+                       alt.Tooltip('tenure_in_yrs:Q', format=",.2f"), "Location"]
+            chart = fill_chart(erg_df, x=x, y=y, ysort=ysort, tooltip=tooltip)
+            st.altair_chart(chart)
+
+
 def plot_data(erg_df):
     plot_general_info(erg_df)
     # plot_level_info(erg_df)
     # plot_location_info(erg_df)
+
 
 if check_password():
     st.title("Ask more informed questions!")
