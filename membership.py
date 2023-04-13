@@ -64,7 +64,7 @@ def check_password():
 
 
 def load_member_emails():
-    raw_emails = st.text_area('Add emails from slack channel', '''''')
+    raw_emails = st.text_area('Add emails from slack channel to fill charts', '''''')
     member_emails = raw_emails.split(", ")
     member_cnt = 0
     if raw_emails:
@@ -80,6 +80,7 @@ def load_raw_employee_data():
     df = pd.DataFrame(list_of_dicts)
 
     df = df[df['Active Status'] == 1].copy()
+    df = df[df['Worker'] != 'Expensify User'].copy()
 
     sub_cols = []
     sub_cols.extend(identifiers)
@@ -307,7 +308,7 @@ def plot_data(erg_df):
 
 if check_password():
     st.title("Ask more informed questions!")
-    st.header("TKTK - Msg to users & disclaimer about what's in and not in data")
+    st.write("TKTK - Msg to users & disclaimer about what's in and not in data")
     # Retrieve sheet names
 
     erg_member_emails = load_member_emails()
