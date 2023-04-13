@@ -52,10 +52,15 @@
 3. Add users & passwords [authentication without SS0](https://docs.streamlit.io/knowledge-base/deploy/authentication-without-sso).
 4. Connect to datasource(s) using secrets management and caching. Check out [tutorials](https://docs.streamlit.io/knowledge-base/tutorials/databases).
 
+
 ### This app uses Private Google Sheet option
 > **Note**
-> `google.oauth2` not working in `virtualenv`. Continuing to dev outside virtualenv.     
+>
+> `google.oauth2` not working in `virtualenv`. Continuing to dev outside virtualenv.
 
+> **Note**
+>
+>  Streamlit tutorial points to deprecated and limited python library to interface with Google Sheets. [`gspread`](https://docs.gspread.org/en/latest/) is a great alternative!
 
 # Linking Data
 
@@ -78,7 +83,7 @@
 1. Logic checks if there's username in sheet & if there is a username password match 
 
 ## Workday employee data
-1. Import directly into private google sheet using custom AppScript. Thank you, @bradspar, for your example that uses Basic Auth and doesn't break!![repo](https://github.com/bradjasper/ImportJSON)
+1. Import directly into private google sheet using custom AppScript. Thank you, @bradspar, for [your example](https://github.com/bradjasper/ImportJSON) that uses Basic Auth and doesn't break!!
 2. More info on source can be found by reaching out to in to tech team for authorization. **HINT**: There's a **Workday - Airtable Reports** document with all the necessary details.
 > **Note** 
 > reading data from Google Sheets changes the default datatypes and some columns name formats might need extras handling.

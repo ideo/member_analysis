@@ -1,17 +1,19 @@
 import streamlit as st
 from google.oauth2 import service_account
-from gsheetsdb import connect
+import gspread
 
 import pandas as pd
 
-
-# Perform SQL query on the Google Sheet.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
-# @st.cache_data(ttl=600)
-def run_query(query):
-    rows = conn.execute(query, headers=1)
-    rows = rows.fetchall()
-    return rows
+# Create a connection object.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+    ],
+)
+gc = gspread.authorize(credentials)
+gsheets_url = st.secrets["private_gsheets"]["private_gsheets_url"]
+spreadsheet = gc.open_by_url(gsheets_url)
 
 
 def check_password():
@@ -19,9 +21,10 @@ def check_password():
 
     def password_entered():
         """Checks whether a password entered by the user is correct."""
-        users_url = st.secrets["private_gsheets"]["private_gsheets_url_passwords"]
-        rows = run_query(f'SELECT * FROM "{users_url}"')
-        df = pd.DataFrame(rows)
+        # select spreadsheet, then sheet
+        worksheet = spreadsheet.worksheet("Passwords")
+        list_of_dicts = worksheet.get_all_records()
+        df = pd.DataFrame(list_of_dicts)
 
         if (
                 st.session_state["username"] in df['username'].values
@@ -54,14 +57,11 @@ def check_password():
         return True
 
 
-# Create a connection object.
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
-    scopes=[
-        "https://www.googleapis.com/auth/spreadsheets",
-    ],
-)
-conn = connect(credentials=credentials)
-
 if check_password():
     st.write("Here goes your normal Streamlit app...")
+
+# Retrieve sheet names
+spreadsheet = gc.open_by_url(gsheets_url)
+sheet_names = [s.title for s in spreadsheet.worksheets()]
+erg_sheet_names = [title for title in sheet_names if "🔐" not in title]
+st.write(erg_sheet_names)
