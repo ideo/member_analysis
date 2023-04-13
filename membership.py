@@ -66,6 +66,7 @@ def check_password():
 def load_member_emails():
     raw_emails = st.text_area('Add emails from slack channel to fill charts', '''''')
     member_emails = raw_emails.split(", ")
+    member_emails = [x.strip() for x in member_emails]
     member_cnt = 0
     if raw_emails:
         member_cnt = len(member_emails)
