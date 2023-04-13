@@ -34,7 +34,9 @@ biz_details = [
     'Location'
 ]
 # BASED ON PAGE
-general_info = ['Job Family', 'Time Type', 'Worker Type']
+general_section = ['Job Family', 'Time Type', 'Worker Type']
+level_section = ['Management Level', 'level_group', 'tenure_in_yrs', 'cost_center_type']
+location_section = ['Location', 'studio', 'Region', 'region_simplified']
 
 true_region_mapping = {
     'NA': ['Remote', 'Lion', 'Cambridge', 'Chicago', 'San Francisco'],

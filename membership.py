@@ -211,7 +211,7 @@ def plot_general_info(erg_df):
     col1, col2 = st.columns([3, 2])
     streamlit_cols = [col1, col2, col2]
 
-    for i, col in enumerate(general_info):
+    for i, col in enumerate(general_section):
         with streamlit_cols[i]:
             # COUNTS BY CATEGORY
             group_sizes = erg_df.groupby(col).size().reset_index(name='count')
@@ -230,11 +230,77 @@ def plot_general_info(erg_df):
             chart = fill_chart(erg_df, x=x, y=y, ysort=ysort, tooltip=tooltip)
             st.altair_chart(chart)
 
+def remove_contingency_option(erg_df, section):
+    types = erg_df['Worker Type'].unique()
+    df = erg_df.copy()
+    if "Contingent Worker" in types:
+        exclude_contingency = st.radio(
+            "Exclude Contingency Workers?",
+            ('No', 'Yes'),
+            key=section
+        )
+
+        if exclude_contingency == "Yes":
+            df = erg_df[erg_df['Worker Type'] != 'Contingent Worker'].copy()
+    return df
+
+def plot_level_info(erg_df):
+    st.title('Power distribution')
+    df = remove_contingency_option(erg_df, section="level")
+
+    for col in level_section:
+        col1, col2 = st.columns([3, 2])
+        with col1:
+            if col == 'tenure_in_yrs':
+                x = f"{col}:Q"
+                y = "count()"
+                chart = fill_chart(df, x=x, y=y, xbin=True)
+                # plot_ridge_line(erg_df)
+            else:
+                if col == 'level_group':
+                    x = "count()"
+                    y = f"{col}:O"
+                    chart = fill_chart(df, x=x, y=y, ysort=management_levels)
+
+                else:
+                    x = "count()"
+                    y = f"{col}:O"
+                    tooltip = ["Worker", "cost_center_type", cost_center_col, level_col,
+                               alt.Tooltip('tenure_in_yrs:Q', format=",.2f"), "Location"]
+                    chart = fill_chart(df, x=x, y=y, ysort=management_levels, tooltip=tooltip)
+
+            st.subheader(col)
+            st.altair_chart(chart)
+        with col2:
+            if col == 'tenure_in_yrs':
+                df[col] = df[col].round()
+
+            group_sizes = df.groupby(col).size().reset_index(name='count')
+            st.dataframe(group_sizes)
+
+
+def plot_location_info(erg_df):
+    st.title("Where is everyone?")
+    df = remove_contingency_option(erg_df, section="Location")
+
+    for col in location_section:
+        col1, col2 = st.columns([3, 2])
+        with col1:
+            st.subheader(col)
+            x = "count()"
+            y = f"{col}:O"
+            ysort = '-x'
+            chart = fill_chart(df, x=x, y=y, ysort=ysort)
+            st.altair_chart(chart)
+        with col2:
+            group_sizes = df.groupby(col).size().reset_index(name='count')
+            st.dataframe(group_sizes)
+
 
 def plot_data(erg_df):
     plot_general_info(erg_df)
-    # plot_level_info(erg_df)
-    # plot_location_info(erg_df)
+    plot_level_info(erg_df)
+    plot_location_info(erg_df)
 
 
 if check_password():
