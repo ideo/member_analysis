@@ -3,6 +3,7 @@ from google.oauth2 import service_account
 import gspread
 import pandas as pd
 import datetime
+import numpy as np
 
 from settings import *
 
@@ -85,16 +86,16 @@ def load_raw_employee_data():
 
 def add_true_regions(df):
     for k, v in true_region_mapping.items():
-        df.loc[df['location'].str.contains('|'.join(v)), 'region_simplified'] = k
+        df.loc[df['Location'].str.contains('|'.join(v)), 'region_simplified'] = k
 
     return df
 
 
 def clean_studio_names(df):
-    df['studio'] = df['location']
-    df.loc[df['location'].str.contains('Remote|Cloud'), 'studio'] = 'Cloud'
-    for studio in studio_names:
-        df.loc[df['location'].str.contains(studio), 'studio'] = studio
+    df['studio'] = df['Location']
+    df.loc[df['Location'].str.contains('Remote|Cloud'), 'studio'] = 'Cloud'
+    for studio in studio_details:
+        df.loc[df['Location'].str.contains(studio), 'studio'] = studio
 
     return df
 
@@ -106,26 +107,41 @@ def clean_geographic_data(df):
     return df
 
 
-def add_ideo_tenure(df):
-    df['Hire_Date'] = pd.to_datetime(df['Hire_Date'])
-    df['tenure_in_yrs'] = (datetime.datetime.now() - df['Hire_Date']) / np.timedelta64(1, 'Y')
+def add_level_groups(df):
+    # 2 enterprise individuals NA - this is rough fix
+    df[level_col].fillna('Senior Enterprise', inplace=True)
+
+    df['level_group'] = df[level_col]
+
+    df.loc[df[level_col].str.contains('Individual', na=False), 'level_group'] = 'Individual'
+    df.loc[df[level_col].str.contains('Team', na=False), 'level_group'] = 'Team'
+    df.loc[df[level_col].str.contains('Director', na=False), 'level_group'] = 'Director'
+    df.loc[df[level_col].str.contains('Enterprise', na=False), 'level_group'] = 'Enterprise'
+
     return df
 
 
-def load_employee_data(member_emails):
-    employee_data_df = load_raw_employee_data()
-    employee_data_df = clean_geographic_data(employee_data_df)
-    # erg_member_data_df = add_level_groups(erg_member_data_df)
-    # erg_member_data_df = add_cost_center_type(erg_member_data_df)
-    return add_ideo_tenure(employee_data_df)
+def add_ideo_tenure(df):
+    df['Hire Date'] = pd.to_datetime(df['Hire Date'])
+    df['tenure_in_yrs'] = (datetime.datetime.now() - df['Hire Date']) / np.timedelta64(1, 'Y')
+    return df
 
 
-def extract_member_data(employee_data_df, member_emails):
-    member_data_df = employee_data_df[employee_data_df[email_col].isin(member_emails)].copy()
+def load_employee_data():
+    df = load_raw_employee_data()
+    df = clean_geographic_data(df)
+    df = add_level_groups(df)
+    # df = add_cost_center_type(df)
+    return add_ideo_tenure(df)
+
+
+def extract_member_data(employee_df, member_emails):
+    member_data_df = employee_df[employee_df[email_col].isin(member_emails)].copy()
     member_data_df.reset_index(inplace=True, drop=True)
     # check_for_non_ideo_com_members(member_emails, erg_member_data_df)
 
     return member_data_df
+
 
 if check_password():
     st.title("Ask more informed questions!")
@@ -133,6 +149,5 @@ if check_password():
     # Retrieve sheet names
 
     erg_member_emails = load_member_emails()
-    employee_data_df = load_employee_data(erg_member_emails)
+    employee_data_df = load_employee_data()
     erg_member_data_df = extract_member_data(employee_data_df, erg_member_emails)
-
