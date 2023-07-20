@@ -23,8 +23,8 @@ biz_details = [
     'Cost Center',
     # 'Job Profile',
     'Job Family',
-    # 'Craft Cohort',
-    # 'Domain',
+    'Craft Cohort',
+    'Domain',
     'On Leave',
     'Management Level',
     'Time Type',
@@ -34,7 +34,7 @@ biz_details = [
     'Location'
 ]
 # BASED ON PAGE
-general_section = ['Job Family', 'Time Type', 'Worker Type']
+general_section = ['Job Family', 'Time Type', 'Worker Type', 'Craft Cohort', 'Domain',]
 level_section = ['Management Level', 'level_group', 'tenure_in_yrs', 'cost_center_type']
 location_section = ['Location', 'studio', 'Region', 'region_simplified']
 

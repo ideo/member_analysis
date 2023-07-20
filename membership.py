@@ -211,7 +211,7 @@ def plot_general_info(erg_df):
     st.dataframe(erg_df)
 
     col1, col2 = st.columns([3, 2])
-    streamlit_cols = [col1, col2, col2]
+    streamlit_cols = [col1, col2, col2, col1, col2,]
 
     for i, col in enumerate(general_section):
         with streamlit_cols[i]:
